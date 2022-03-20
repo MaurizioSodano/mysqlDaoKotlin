@@ -4,6 +4,7 @@ package com.mynewco.db
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
+import java.util.*
 
 class Database private constructor() {
     val connection get() = _connection
@@ -15,8 +16,13 @@ class Database private constructor() {
     }
 
     @Throws(SQLException::class)
-    fun connect() {
-        _connection = DriverManager.getConnection(URL, "root", "Mercogli@no2022M")
+    fun connect(props: Properties) {
+        val server=props.getProperty("server")
+        val database=props.getProperty("database")
+        val port=props.getProperty("port")
+        val user=props.getProperty("user")
+        val pwd=props.getProperty("password")
+        _connection = DriverManager.getConnection("$URL$server:$port/$database", user, pwd)
     }
 
     @Throws(SQLException::class)
@@ -26,6 +32,6 @@ class Database private constructor() {
 
     companion object {
         val instance: Database by lazy { Holder.INSTANCE }
-        private const val URL = "jdbc:mysql://localhost:3306/people"
+        private const val URL = "jdbc:mysql://"
     }
 }  // Lazy Singleton Inizialization Holder
