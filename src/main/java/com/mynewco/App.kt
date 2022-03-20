@@ -4,9 +4,8 @@ import com.mynewco.db.Database
 import com.mynewco.db.UserDao
 import com.mynewco.db.UserDaoImpl
 import com.mynewco.model.User
-import java.io.IOException
 import java.sql.SQLException
-import java.util.Properties
+import java.util.*
 
 /**
  * Hello world!
@@ -15,11 +14,19 @@ object App {
     @JvmStatic
     fun main(args: Array<String>) {
 
-        val props =Properties()
-        val propertiesFile="/config/db.properties"
+        val props = Properties()
+
+        var env = System.getProperty("env")
+        if (env == null) {
+            env = "dev"
+        }
+
+
+        val propertiesFile = "/config/db.$env.properties"
+        println("Reading properties from $propertiesFile")
         try {
             props.load(App.javaClass.getResourceAsStream(propertiesFile))
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             println("Cannot load properties file: $propertiesFile")
             return
         }
@@ -42,10 +49,10 @@ object App {
         users.forEach(System.out::println)
 
         var retrievedUser = userDao.findById(21)
-        retrievedUser?.let {  println("Retrieved $it")}?:println("Retrieved none")
+        retrievedUser?.let { println("Retrieved $it") } ?: println("Retrieved none")
 
         retrievedUser = userDao.findById(1)
-        retrievedUser?.let {  println("Retrieved $it")}?:println("Retrieved none")
+        retrievedUser?.let { println("Retrieved $it") } ?: println("Retrieved none")
 
         retrievedUser?.let { userDao.delete(it) }
         users.forEach(System.out::println)
@@ -53,7 +60,7 @@ object App {
 
 
 
-        userDao.update(User(5,"Saturn"))
+        userDao.update(User(5, "Saturn"))
         users.forEach(System.out::println)
         try {
             db.close()
