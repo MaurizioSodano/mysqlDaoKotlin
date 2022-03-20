@@ -6,7 +6,9 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 class Database private constructor() {
-    private var connection: Connection? = null
+    val connection get() = _connection
+    private var _connection: Connection? = null
+
     //Holder object & lazy instance is used to ensure only one instance of Singleton is created.
     private object Holder {
         val INSTANCE = Database()
@@ -14,12 +16,12 @@ class Database private constructor() {
 
     @Throws(SQLException::class)
     fun connect() {
-        connection = DriverManager.getConnection(URL, "root", "Mercogli@no2022M")
+        _connection = DriverManager.getConnection(URL, "root", "Mercogli@no2022M")
     }
 
     @Throws(SQLException::class)
     fun close() {
-        connection!!.close()
+        _connection!!.close()
     }
 
     companion object {

@@ -7,4 +7,5 @@ interface Dao<T> {
     fun findById(id: Int): Optional<T>?
     fun update(t: T)
     fun delete(t: T)
+    fun getAll(): List<T>
 }
