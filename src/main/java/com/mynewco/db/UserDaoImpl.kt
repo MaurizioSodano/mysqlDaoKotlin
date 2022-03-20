@@ -21,7 +21,6 @@ class UserDaoImpl : UserDao {
 
     override fun findById(id: Int): User? {
         val conn = Database.instance.connection;
-
         var user: User? = null
 
         try {
@@ -42,12 +41,23 @@ class UserDaoImpl : UserDao {
         return user
     }
 
-    override fun update(t: User) {
+    override fun update(user: User) {
         TODO("Not yet implemented")
     }
 
-    override fun delete(t: User) {
-        TODO("Not yet implemented")
+    override fun delete(user: User) {
+        val conn = Database.instance.connection;
+
+        try {
+            val stmt = conn?.prepareStatement("delete from user where id =?")
+            stmt?.setInt(1, user.id)
+            stmt?.executeUpdate()
+            stmt?.close()
+
+        } catch (e: SQLException) {
+            throw DaoException(e)
+        }
+
     }
 
     override fun getAll(): List<User> {

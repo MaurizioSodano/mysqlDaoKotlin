@@ -32,6 +32,8 @@ object App {
         retrievedUser = userDao.findById(1)
         retrievedUser?.let {  println("Retrieved $it")}?:println("Retrieved none")
 
+        retrievedUser?.let { userDao.delete(it) }
+        users.forEach(System.out::println)
         try {
             db.close()
         } catch (e: SQLException) {
