@@ -1,6 +1,7 @@
 package com.mynewco
 
 import com.mynewco.db.Database
+import com.mynewco.db.Profile
 import com.mynewco.db.UserDao
 import com.mynewco.db.UserDaoImpl
 import com.mynewco.model.User
@@ -14,27 +15,9 @@ object App {
     @JvmStatic
     fun main(args: Array<String>) {
 
-        val props = Properties()
-
-        var env = System.getProperty("env")
-        if (env == null) {
-            env = "dev"
-        }
-
-
-        val propertiesFile = "/config/db.$env.properties"
-        println("Reading properties from $propertiesFile")
-        try {
-            props.load(App.javaClass.getResourceAsStream(propertiesFile))
-        } catch (e: Exception) {
-            println("Cannot load properties file: $propertiesFile")
-            return
-        }
-
-
         val db = Database.instance
         try {
-            db.connect(props)
+            db.connect(Profile.getProperties("db"))
             println("Connected!")
         } catch (e: SQLException) {
             println("Cannot connect to database.")
