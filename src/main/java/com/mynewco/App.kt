@@ -1,26 +1,26 @@
-package com.mynewco;
+package com.mynewco
 
-import com.mynewco.db.Database;
-
-import java.sql.SQLException;
+import kotlin.jvm.JvmStatic
+import com.mynewco.db.Database
+import java.sql.SQLException
 
 /**
  * Hello world!
  */
-public class App {
-    public static void main(String[] args) {
-        var db= Database.getInstance();
+object App {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val db = Database.instance
         try {
-            db.connect();
-        } catch (SQLException e) {
-            System.out.println("Cannot connect to database.");
+            db.connect()
+        } catch (e: SQLException) {
+            println("Cannot connect to database.")
         }
-
         try {
-            db.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            db.close()
+        } catch (e: SQLException) {
+            e.printStackTrace()
         }
-        System.out.println("Hello World!");
+        println("Hello World!")
     }
 }

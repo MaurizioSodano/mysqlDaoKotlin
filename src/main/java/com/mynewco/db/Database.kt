@@ -1,34 +1,29 @@
-package com.mynewco.db;
+package com.mynewco.db
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
 
-public class Database {
-    private static final String URL = "jdbc:mysql://localhost:3306/people";
-    private Connection connection;
-
-    // Lazy Singleton Inizialization Holder
-    private Database() {
+class Database private constructor() {
+    private var connection: Connection? = null
+    //Holder object & lazy instance is used to ensure only one instance of Singleton is created.
+    private object Holder {
+        val INSTANCE = Database()
     }
 
-    private static class RegistryHolder {
-        static Database INSTANCE = new Database();
+    @Throws(SQLException::class)
+    fun connect() {
+        connection = DriverManager.getConnection(URL, "root", "Mercogli@no2022M")
     }
 
-    public static Database getInstance() {
-        return RegistryHolder.INSTANCE;
+    @Throws(SQLException::class)
+    fun close() {
+        connection!!.close()
     }
 
-    public void connect() throws SQLException {
-        connection = DriverManager.getConnection(URL, "root", "Mercogli@no2022M");
-
+    companion object {
+        val instance: Database by lazy { Holder.INSTANCE }
+        private const val URL = "jdbc:mysql://localhost:3306/people"
     }
-
-    public void close() throws SQLException {
-        connection.close();
-    }
-
-    ;
-}
+}  // Lazy Singleton Inizialization Holder
