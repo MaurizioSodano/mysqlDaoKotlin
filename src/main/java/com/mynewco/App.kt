@@ -1,10 +1,8 @@
 package com.mynewco
 
-import kotlin.jvm.JvmStatic
 import com.mynewco.db.Database
 import com.mynewco.db.UserDao
 import com.mynewco.db.UserDaoImpl
-import com.mynewco.model.User
 import java.sql.SQLException
 
 /**
@@ -21,18 +19,24 @@ object App {
             println("Cannot connect to database.")
         }
 
-        val userDao:UserDao= UserDaoImpl()
+        val userDao: UserDao = UserDaoImpl()
         //userDao.save(User("Jupiter"))
         //userDao.save(User("Venus"))
-        val users=userDao.getAll()
+        val users = userDao.getAll()
 
-        users.forEach (System.out::println)
+        users.forEach(System.out::println)
+
+        var retrievedUser = userDao.findById(21)
+        retrievedUser?.let {  println("Retrieved $it")}?:println("Retrieved none")
+
+        retrievedUser = userDao.findById(1)
+        retrievedUser?.let {  println("Retrieved $it")}?:println("Retrieved none")
 
         try {
             db.close()
         } catch (e: SQLException) {
             e.printStackTrace()
         }
-        println("Hello World!")
+        //println("Hello World!")
     }
 }
