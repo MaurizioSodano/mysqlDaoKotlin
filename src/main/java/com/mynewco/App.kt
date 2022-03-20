@@ -16,14 +16,17 @@ object App {
         val db = Database.instance
         try {
             db.connect()
+            println("Connected!")
         } catch (e: SQLException) {
             println("Cannot connect to database.")
         }
 
         val userDao:UserDao= UserDaoImpl()
-        userDao.save(User("Jupiter"))
-        userDao.save(User("Venus"))
+        //userDao.save(User("Jupiter"))
+        //userDao.save(User("Venus"))
+        val users=userDao.getAll()
 
+        users.forEach (System.out::println)
 
         try {
             db.close()

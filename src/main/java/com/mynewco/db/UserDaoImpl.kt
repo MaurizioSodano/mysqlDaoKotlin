@@ -33,7 +33,25 @@ class UserDaoImpl : UserDao {
     }
 
     override fun getAll(): List<User> {
-        TODO("Not yet implemented")
+        val conn = Database.instance.connection;
+        val users= arrayListOf<User>()
+
+
+        try {
+            val stmt = conn?.createStatement()
+            val rs=stmt?.executeQuery("select id, name from user")
+            while (rs?.next()==true){
+                val id= rs.getInt("id")
+                val name=rs.getString("name")
+                users.add(User(id,name))
+
+            }
+            stmt?.close()
+
+        } catch (e: SQLException) {
+            throw DaoException(e)
+        }
+        return users
     }
 
 }
