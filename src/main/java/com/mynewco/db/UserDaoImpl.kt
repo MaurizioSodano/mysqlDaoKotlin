@@ -42,7 +42,19 @@ class UserDaoImpl : UserDao {
     }
 
     override fun update(user: User) {
-        TODO("Not yet implemented")
+        val conn = Database.instance.connection;
+
+        try {
+            val stmt = conn?.prepareStatement("update user set name=? where id =?")
+            stmt?.setInt(2, user.id)
+            stmt?.setString(1, user.name)
+            stmt?.executeUpdate()
+            stmt?.close()
+
+        } catch (e: SQLException) {
+            throw DaoException(e)
+        }
+
     }
 
     override fun delete(user: User) {

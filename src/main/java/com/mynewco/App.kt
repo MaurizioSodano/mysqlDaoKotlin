@@ -3,6 +3,7 @@ package com.mynewco
 import com.mynewco.db.Database
 import com.mynewco.db.UserDao
 import com.mynewco.db.UserDaoImpl
+import com.mynewco.model.User
 import java.sql.SQLException
 
 /**
@@ -34,11 +35,16 @@ object App {
 
         retrievedUser?.let { userDao.delete(it) }
         users.forEach(System.out::println)
+
+
+
+
+        userDao.update(User(5,"Saturn"))
+        users.forEach(System.out::println)
         try {
             db.close()
         } catch (e: SQLException) {
             e.printStackTrace()
         }
-        //println("Hello World!")
     }
 }
