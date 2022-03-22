@@ -79,7 +79,7 @@ class UserDaoImpl : UserDao {
 
         try {
             val stmt = conn?.createStatement()
-            val rs = stmt?.executeQuery("select id, name from user")
+            val rs = stmt?.executeQuery("select id, name from user order by id")
             while (rs?.next() == true) {
                 val id = rs.getInt("id")
                 val name = rs.getString("name")

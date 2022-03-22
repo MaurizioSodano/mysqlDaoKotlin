@@ -150,14 +150,39 @@ class UserDaoImplTest {
         val maxId = getMaxId()
 
         println("maxId=$maxId")
-        for ( i  in 0 until users.size){
+        for ( i  in users.indices){
             val id=(maxId- users.size)+i+1
-            println("id=$id")
+            //println("id=$id")
             users[i].id=id
         }
         val retrievedUsers=getUserInRange(maxId- users.size+1,maxId)
         assertEquals("max Id differs from expected", retrievedUsers.size, NUM_TEST_USERS)
         assertEquals("max Id differs from expected", users,retrievedUsers)
+
+    }
+
+    @Test
+    fun delete() {
+    }
+
+    @Test
+    fun getAll() {
+        val userDao = UserDaoImpl()
+        for (user in users) {
+            userDao.save(user)
+        }
+        val maxId = getMaxId()
+
+
+        for ( i  in users.indices){
+            val id=(maxId- users.size)+i+1
+           // println("id=$id")
+            users[i].id=id
+        }
+        var dbUsers=userDao.getAll()
+        dbUsers=dbUsers.subList(dbUsers.size- users.size,dbUsers.size)//getUserInRange(maxId- users.size+1,maxId)
+        assertEquals("max Id differs from expected", dbUsers.size, NUM_TEST_USERS)
+        assertEquals("max Id differs from expected", users,dbUsers)
 
     }
 }
