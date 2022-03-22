@@ -11,15 +11,16 @@ import java.nio.file.Paths
 import java.sql.Connection
 import java.util.function.Supplier
 import kotlin.streams.asSequence
+import kotlin.test.assertNotNull
 
 
 class UserDaoImplTest {
     private var conn: Connection? = null
 
-    private var users: List<User>? = null
+    private lateinit var users: List<User>
 
     companion object {
-        const val NUM_TEST_USERS = 2
+        const val NUM_TEST_USERS = 200
     }
 
     private fun loadUsers(): List<User> {
@@ -47,6 +48,27 @@ class UserDaoImplTest {
 
     }
 
+    @Test
+    fun testFindAndUpdate(){
+        val user= users[0]
+        val userDao=UserDaoImpl()
+        userDao.save(user)
+
+        val maxId=getMaxId()
+        user.id=maxId
+        var retrievedUser=userDao.findById(maxId)
+        assertNotNull(retrievedUser,"no user retrieved")
+        assertEquals("retrieved user differs from saved user",retrievedUser,user)
+
+        user.name="abcde"
+        userDao.update(user)
+        retrievedUser=userDao.findById(maxId)
+        assertNotNull(retrievedUser,"no user retrieved")
+        assertEquals("retrieved user differs from saved user",retrievedUser,user)
+
+
+
+    }
     @After
     fun tearDown() {
         println("After")
@@ -58,7 +80,7 @@ class UserDaoImplTest {
     fun setUp() {
         println("Before")
         users = loadUsers()
-        println(users?.size)
+        println(users.size)
         //users?.forEach { user -> run { val userDao = UserDaoImpl(); userDao.save(user); } }
         val db = Database.instance
         val props = Profile.getProperties("db")
@@ -122,18 +144,18 @@ class UserDaoImplTest {
     @Test
     fun saveMultiple() {
         val userDao = UserDaoImpl()
-        for (user in users!!) {
+        for (user in users) {
             userDao.save(user)
         }
         val maxId = getMaxId()
 
         println("maxId=$maxId")
-        for ( i  in 0 until users!!.size){
-            val id=(maxId-users!!.size)+i+1
+        for ( i  in 0 until users.size){
+            val id=(maxId- users.size)+i+1
             println("id=$id")
-            users!![i].id=id
+            users[i].id=id
         }
-        val retrievedUsers=getUserInRange(maxId-users!!.size+1,maxId)
+        val retrievedUsers=getUserInRange(maxId- users.size+1,maxId)
         assertEquals("max Id differs from expected", retrievedUsers.size, NUM_TEST_USERS)
         assertEquals("max Id differs from expected", users,retrievedUsers)
 
