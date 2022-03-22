@@ -17,13 +17,13 @@ import kotlin.test.assertNotNull
 class UserDaoImplTest {
     private var conn: Connection? = null
 
-    private lateinit var users: List<User>
+    private lateinit var users: MutableList<User>
 
     companion object {
         const val NUM_TEST_USERS = 200
     }
 
-    private fun loadUsers(): List<User> {
+    private fun loadUsers(): MutableList<User> {
         //val users = arrayListOf<User>()
         val path = Paths.get(
             Companion::class.java.classLoader?.getResource("greaterexpectations.txt")?.toURI()!!
@@ -43,8 +43,7 @@ class UserDaoImplTest {
             .take(NUM_TEST_USERS)
             .map { name -> User(name) }
 
-            .toList()
-
+            .toMutableList()
 
     }
 
@@ -80,7 +79,7 @@ class UserDaoImplTest {
     fun setUp() {
         println("Before")
         users = loadUsers()
-        println(users.size)
+        //println(users.size)
         //users?.forEach { user -> run { val userDao = UserDaoImpl(); userDao.save(user); } }
         val db = Database.instance
         val props = Profile.getProperties("db")
@@ -149,7 +148,7 @@ class UserDaoImplTest {
         }
         val maxId = getMaxId()
 
-        println("maxId=$maxId")
+       // println("maxId=$maxId")
         for ( i  in users.indices){
             val id=(maxId- users.size)+i+1
             //println("id=$id")
@@ -163,6 +162,32 @@ class UserDaoImplTest {
 
     @Test
     fun delete() {
+        val userDao = UserDaoImpl()
+        for (user in users) {
+            userDao.save(user)
+        }
+
+
+        val maxId = getMaxId()
+
+        //println("maxId=$maxId")
+        for ( i  in users.indices){
+            val id=(maxId- users.size)+i+1
+            users[i].id=id
+        }
+        val deletedUserIndex= NUM_TEST_USERS/2
+        val deleteUser=users[deletedUserIndex]
+
+        //println("deleted user=$deleteUser")
+        //println("users:$users")
+
+        users.remove(deleteUser)
+        userDao.delete(deleteUser)
+        val retrievedUsers=getUserInRange(maxId- NUM_TEST_USERS+1,maxId)
+       // println("retrieved users:$retrievedUsers")
+        assertEquals("max Id differs from expected", retrievedUsers.size, users.size)
+        assertEquals("max Id differs from expected", users,retrievedUsers)
+
     }
 
     @Test
